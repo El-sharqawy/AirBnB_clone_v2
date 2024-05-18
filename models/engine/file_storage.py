@@ -23,7 +23,7 @@ class FileStorage:
         if cls is not None:
             tempDict = {}
             for key, value in self.__objects.items():
-                if value.__class__ == cls:
+                if value.__class__ == cls or cls == value.__class__.__name__:
                     if "password" in value.__dict__:
                         hpwd = md5()
                         hpwd.update(value.__dict__["password"].encode("utf-8"))
@@ -35,7 +35,9 @@ class FileStorage:
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()["__class__"] + "." + obj.id: obj})
+        if obj is not None:
+            key = obj.__class__.__name__ + "." + obj.id
+            self.__objects[key] = obj
 
     def save(self):
         """Saves storage dictionary to file"""
