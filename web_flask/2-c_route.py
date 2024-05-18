@@ -20,7 +20,7 @@ def hbnb():
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def c_is_fun(text):
+def cisfun(text):
     """Display "C" Followed by the given text"""
     return 'C ' + text.replace('_', '')
 
