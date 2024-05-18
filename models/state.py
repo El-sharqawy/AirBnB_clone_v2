@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """State Module for HBNB project"""
 
-import models
+from models import storage_type
 from models.base_model import BaseModel, Base
 from models.city import City
 from sqlalchemy import Column, String, DateTime, ForeignKey
@@ -19,13 +19,18 @@ class State(BaseModel, Base):
         """Initialize state"""
         super().__init__(*args, **kwargs)
 
-    if models.storage_type != "db":
+    if storage_type != "db":
 
         @property
         def cities(self):
+            from models import storage
+
             citieslist = []
-            my_cities = models.storage.all(City)
-            for city in my_cities.values():
-                if city.state_id == self.id:
-                    citieslist.append(city)
+            for key, value in storage.all().items():
+                if type(value).__name__ == "City":
+                    if (
+                        "state_id" in value.__dict__
+                        and str(value.__dict__["state_id"]) == self.id
+                    ):
+                        citieslist.append(value)
             return citieslist
