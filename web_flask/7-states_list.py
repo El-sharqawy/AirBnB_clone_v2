@@ -5,11 +5,12 @@ start Flask web Application
 
 from flask import Flask, render_template
 from models import storage
+from models.state import State
 
 app = Flask(__name__)
 
 
-@app.route("/statis_list", strict_slashes=False)
+@app.route("/states_list", strict_slashes=False)
 def statesList():
     """Display HTML page with list of states sorted"""
     states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
