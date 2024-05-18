@@ -21,15 +21,15 @@ def hbnb():
 
 @app.route('/c/<text>', strict_slashes=False)
 def cisfun(text):
-    """Display "C" Followed by the given text"""
+    """Display "C " Followed by the given text"""
     return 'C ' + text.replace('_', ' ')
 
 
 @app.route('/python', strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
 def pyiscool(text='is cool'):
-    """Prints "Python " followed by given text"""
-    return "Python " + text.replace('_', ' ')
+    """Display "Python " followed by given text"""
+    return 'Python ' + text.replace('_', ' ')
 
 
 if __name__ == '__main__':
