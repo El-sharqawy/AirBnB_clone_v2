@@ -18,8 +18,8 @@ import os
 
 
 class DBStorage:
-    """This class manages DB storage for the HBnB clone project.
-    """
+    """This class manages DB storage for the HBnB clone project."""
+
     __engine = None
     __session = None
 
@@ -27,15 +27,15 @@ class DBStorage:
         """This method initializes an instance of the
         DBStorage class.
         """
-        sqluser = os.getenv('HBNB_MYSQL_USER')
-        sqlpass = os.getenv('HBNB_MYSQL_PWD')
-        sqlhost = os.getenv('HBNB_MYSQL_HOST')
-        sqldbname = os.getenv('HBNB_MYSQL_DB')
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-                                      format(sqluser, sqlpass,
-                                             sqlhost, sqldbname),
-                                      pool_pre_ping=True)
-        if os.getenv('HBNB_ENV') == 'test':
+        sqluser = os.getenv("HBNB_MYSQL_USER")
+        sqlpass = os.getenv("HBNB_MYSQL_PWD")
+        sqlhost = os.getenv("HBNB_MYSQL_HOST")
+        sqldbname = os.getenv("HBNB_MYSQL_DB")
+        self.__engine = create_engine(
+            "mysql+mysqldb://{}:{}@{}/{}".format(sqluser, sqlpass, sqlhost, sqldbname),
+            pool_pre_ping=True,
+        )
+        if os.getenv("HBNB_ENV") == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
@@ -53,8 +53,7 @@ class DBStorage:
         else:
             myObjects = self.__session.query(cls).all()
 
-        rDict = {"{}.{}".format(type(obj).__name__, obj.id):
-                 obj for obj in myObjects}
+        rDict = {"{}.{}".format(type(obj).__name__, obj.id): obj for obj in myObjects}
         return rDict
 
     def new(self, obj):
@@ -65,13 +64,11 @@ class DBStorage:
             self.__session.add(obj)
 
     def save(self):
-        """commit all changes of the current database session
-        """
+        """commit all changes of the current database session"""
         self.__session.commit()
 
     def delete(self, obj=None):
-        """delete from the current database session obj if not None
-        """
+        """delete from the current database session obj if not None"""
         if obj is not None:
             self.__session.delete(obj)
 
@@ -88,11 +85,10 @@ class DBStorage:
         from models.review import Review
 
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(
-            bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
-        self.__session = Session()
+        self.__session = Session
 
     def close(self):
-        """ removes the current session"""
+        """removes the current session"""
         self.__session.remove()
