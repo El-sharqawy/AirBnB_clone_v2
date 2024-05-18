@@ -4,8 +4,7 @@ from fabric.api import local
 
 
 def setup_env():
-    # INSTALL_STEPS = [
-    #     'virtualenv ../env;. ../env/bin/activate;pip install -r requirements.txt;deactivate']
+    # INSTALL_STEPS
     # for step in INSTALL_STEPS:
     #     local(step)
     pass
@@ -13,10 +12,10 @@ def setup_env():
 
 def setup_lrs():
     # Media folder names
-    agent_profile = 'agent_profile'
-    activity_profile = 'activity_profile'
-    activity_state = 'activity_state'
-    statement_attachments = 'attachment_payloads'
+    agent_profile = "agent_profile"
+    activity_profile = "activity_profile"
+    activity_state = "activity_state"
+    statement_attachments = "attachment_payloads"
 
     # # Add env packages and project to the path
     # cwd = os.path.dirname(os.path.abspath(__file__))
@@ -28,29 +27,30 @@ def setup_lrs():
     # if env_dir not in sys.path:
     #     sys.path.append(env_dir)
 
-    log_dir = os.path.join(cwd, '../logs')
+    log_dir = os.path.join(cwd, "../logs")
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    celery_log_dir = os.path.join(log_dir, 'celery')
+    celery_log_dir = os.path.join(log_dir, "celery")
     if not os.path.exists(celery_log_dir):
         os.makedirs(celery_log_dir)
 
-    supervisord_log_dir = os.path.join(log_dir, 'supervisord')
+    supervisord_log_dir = os.path.join(log_dir, "supervisord")
     if not os.path.exists(supervisord_log_dir):
         os.makedirs(supervisord_log_dir)
 
-    uwsgi_log_dir = os.path.join(log_dir, 'uwsgi')
+    uwsgi_log_dir = os.path.join(log_dir, "uwsgi")
     if not os.path.exists(uwsgi_log_dir):
         os.makedirs(uwsgi_log_dir)
 
-    nginx_log_dir = os.path.join(log_dir, 'nginx')
+    nginx_log_dir = os.path.join(log_dir, "nginx")
     if not os.path.exists(nginx_log_dir):
         os.makedirs(nginx_log_dir)
 
     # Add settings module so fab file can see it
-    os.environ['DJANGO_SETTINGS_MODULE'] = "adl_lrs.settings"
+    os.environ["DJANGO_SETTINGS_MODULE"] = "adl_lrs.settings"
     from django.conf import settings
+
     adldir = settings.MEDIA_ROOT
 
     # Create media directories
@@ -67,13 +67,13 @@ def setup_lrs():
         os.makedirs(os.path.join(adldir, statement_attachments))
 
     # Create cache tables and sync the db
-    local('./manage.py createcachetable')
-    local('./manage.py migrate')
-    local('./manage.py makemigrations adl_lrs lrs oauth_provider')
-    local('./manage.py migrate')
-    local('./manage.py migrate defender')
-    local('./manage.py createsuperuser')
+    local("./manage.py createcachetable")
+    local("./manage.py migrate")
+    local("./manage.py makemigrations adl_lrs lrs oauth_provider")
+    local("./manage.py migrate")
+    local("./manage.py migrate defender")
+    local("./manage.py createsuperuser")
 
 
 def test_lrs():
-    local('./manage.py test lrs.tests')
+    local("./manage.py test lrs.tests")

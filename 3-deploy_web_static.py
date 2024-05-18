@@ -1,44 +1,48 @@
 #!/usr/bin/python3
 """Create and distributes an archive to web servers"""
+
 import os.path
 import time
 from fabric.api import local
 from fabric.operations import env, put, run
 
-env.hosts = ['52.205.14.105', '52.3.220.148']
+env.hosts = ["52.205.14.105", "52.3.220.148"]
 
 
 def do_pack():
     """Generate an archive from web_static"""
     try:
         local("mkdir -p versions")
-        local("tar -cvzf versions/web_static_{}.tgz web_static/".
-              format(time.strftime("%Y%m%d%H%M%S")))
-        return ("versions/web_static_{}.tgz".format(time.
-                                                    strftime("%Y%m%d%H%M%S")))
-    except:
+        local(
+            "tar -cvzf versions/web_static_{}.tgz web_static/".format(
+                time.strftime("%Y%m%d%H%M%S")
+            )
+        )
+        return "versions/web_static_{}.tgz".format(
+            time.strftime("%Y%m%d%H%M%S"))
+    except TypeError:
         return None
 
 
 def do_deploy(archive_path):
     """Distribute an archive to my web servers"""
-    if (os.path.isfile(archive_path) is False):
+    if os.path.isfile(archive_path) is False:
         return False
 
     try:
         file = archive_path.split("/")[-1]
-        folder = ("/data/web_static/releases/" + file.split(".")[0])
+        folder = "/data/web_static/releases/" + file.split(".")[0]
         put(archive_path, "/tmp/")
         run("mkdir -p {}".format(folder))
         run("tar -xzf /tmp/{} -C {}".format(file, folder))
         run("rm /tmp/{}".format(file))
         run("mv {}/web_static/* {}/".format(folder, folder))
         run("rm -rf {}/web_static".format(folder))
-        run('rm -rf /data/web_static/current')
+        run("rm -rf /data/web_static/current")
         run("ln -s {} /data/web_static/current".format(folder))
         print("Deployment done")
         return True
-    except:
+    except TypeError:
         return False
 
 
@@ -47,5 +51,5 @@ def deploy():
     try:
         path = do_pack()
         return do_deploy(path)
-    except:
+    except TypeError:
         return False
